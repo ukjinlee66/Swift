@@ -11,11 +11,11 @@ import UIKit //module
 class ViewController: UIViewController{ //UIViewController 를 상속받았으며
     //swift 는 단 한개의 상속만 받을 수 있다. 모든 MVC 컨트롤러는 위 컨트롤러를 상속받아야만 한다.
 
-    @IBOutlet weak var display: UILabel!
+    @IBOutlet private weak var display: UILabel!
     
-    var userisinthemiddleoftyping = false
+    private var userisinthemiddleoftyping = false
     
-    @IBAction func touchDigit(_ sender: UIButton) {
+    @IBAction private func touchDigit(_ sender: UIButton) {
         let Digit = sender.currentTitle!
         if userisinthemiddleoftyping
         {
@@ -28,17 +28,29 @@ class ViewController: UIViewController{ //UIViewController 를 상속받았으�
         }
         userisinthemiddleoftyping = true
     }
-    
-    @IBAction func performoperation(_ sender: UIButton) {
-        userisinthemiddleoftyping = false
-        if let mathmaticalsymbol = sender.currentTitle
-        {
-            if mathmaticalsymbol == "π"
-            {
-                display.text = String(Double.pi)
-            }
+    private var displayvalue : Double{
+        get{
+            return Double(display.text!)!
+        }
+        set{
+            display.text = String(newValue)
         }
     }
     
+    private var Brain = calculatorBrain()
+    
+    @IBAction private func performoperation(_ sender: UIButton) {
+        if userisinthemiddleoftyping
+        {
+            Brain.setOperend(operend: displayvalue)
+            userisinthemiddleoftyping = false
+        }
+        
+        if let mathmaticalsymbol = sender.currentTitle
+        {
+            Brain.performOperation(symbol: mathmaticalsymbol)
+        }
+        displayvalue = Brain.result
+    }
 }
 
